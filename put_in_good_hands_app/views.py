@@ -1,3 +1,18 @@
 from django.shortcuts import render
+from django.views.generic import CreateView, TemplateView
 
-# Create your views here.
+
+class LandingPageView(TemplateView):
+    pass
+
+
+class AddDonationView(CreateView):
+    pass
+
+
+class LoginView(TemplateView):
+    pass
+
+
+class RegisterView(TemplateView):
+    pass

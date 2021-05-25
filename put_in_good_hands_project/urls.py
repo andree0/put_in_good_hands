@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from put_in_good_hands_app import views as v
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('/', v.LandingPageView.as_view(), name="landing_page"),
 ]
