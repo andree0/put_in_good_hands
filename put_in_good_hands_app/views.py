@@ -3,16 +3,16 @@ from django.views.generic import CreateView, TemplateView
 
 
 class LandingPageView(TemplateView):
-    pass
+    template_name = "index.html"
 
 
-class AddDonationView(CreateView):
-    pass
+class AddDonationView(TemplateView):
+    template_name = "form.html"
 
 
 class LoginView(TemplateView):
-    pass
+    template_name = "login.html"
 
 
 class RegisterView(TemplateView):
-    pass
+    template_name = "register.html"

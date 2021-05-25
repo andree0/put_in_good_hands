@@ -20,5 +20,8 @@ from put_in_good_hands_app import views as v
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('/', v.LandingPageView.as_view(), name="landing_page"),
+    path('', v.LandingPageView.as_view(), name="landing_page"),
+    path('login/', v.LoginView.as_view(), name="login"),
+    path('register/', v.RegisterView.as_view(), name="register"),
+    path('add-donation/', v.AddDonationView.as_view(), name="add-donation"),
 ]
