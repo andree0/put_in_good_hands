@@ -21,6 +21,9 @@ class Institution(models.Model):
     type = models.IntegerField(choices=TYPES, default=TYPES[0])
     categories = models.ManyToManyField(Category)
 
+    def __str__(self):
+        return self.name
+
 
 class Donation(models.Model):
     quantity = models.PositiveIntegerField()
@@ -35,3 +38,7 @@ class Donation(models.Model):
     pick_up_comment = models.CharField(max_length=255)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,
                              default=models.SET_NULL)
+
+    def __str__(self):
+        return f"{self.quantity} worków dla {self.institution} - " \
+               f"{self.pick_up_date} {self.pick_up_time}"
