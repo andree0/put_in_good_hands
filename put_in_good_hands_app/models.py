@@ -1,5 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
+
+from put_in_good_hands_app.validators import (
+    validate_address,
+    validate_zip_code,
+)
 
 
 class Category(models.Model):
@@ -29,15 +35,17 @@ class Donation(models.Model):
     quantity = models.PositiveIntegerField()
     categories = models.ManyToManyField(Category)
     institution = models.ForeignKey(Institution, on_delete=models.PROTECT)
-    address = models.CharField(max_length=255)
-    phone_number = models.PositiveIntegerField()
+    address = models.CharField(max_length=255, validators=[validate_address])
+    phone_number = models.PositiveIntegerField(validators=[
+        MinValueValidator(100000000), MaxValueValidator(999999999)])
     city = models.CharField(max_length=128)
-    zip_code = models.CharField(max_length=6)
+    zip_code = models.CharField(max_length=6, validators=[validate_zip_code],
+                                help_text="XX-XXX")
     pick_up_date = models.DateField()
     pick_up_time = models.TimeField()
-    pick_up_comment = models.CharField(max_length=255)
+    pick_up_comment = models.CharField(max_length=255, blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,
-                             default=models.SET_NULL)
+                             blank=True, default=None)
 
     def __str__(self):
         return f"{self.quantity} worków dla {self.institution} - " \
