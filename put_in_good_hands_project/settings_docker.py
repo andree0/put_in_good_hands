@@ -75,18 +75,14 @@ WSGI_APPLICATION = 'put_in_good_hands_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-# for postgres
-# try:
-#     from put_in_good_hands_project.local_settings import DATABASES
-# except ModuleNotFoundError:
-#     print("Brak konfiguracji bazy danych w pliku local_settings.py!")
-#     print("Uzupełnij dane i spróbuj ponownie!")
-#     exit(0)
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'HOST': 'localhost',
+        'PORT': 5432,
+        'USER': 'postgres',
+        'PASSWORD': 'postgres'
     }
 }
 

@@ -13,8 +13,7 @@ class LandingPageView(TemplateView):
             'counter_bags': Donation.objects.aggregate(
                 sum_bag=Sum('quantity'))[
                 'sum_bag'] if Donation.objects.all() else 0,
-            'counter_organization': Donation.objects.values(
-                'institution_id').count()
+            'counter_organization': Institution.objects.all().count()
         }
 
 
