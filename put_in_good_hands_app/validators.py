@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 
 
 def validate_zip_code(value):
-    if len(value) != 6 or value[2] == '-':
+    if len(value) != 6 or value[2] != '-':
         raise ValidationError("Zły format kodu pocztowego.")
     value_num = value.split('-')
     try:
