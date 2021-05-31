@@ -10,9 +10,9 @@ class LandingPageView(TemplateView):
     template_name = "index.html"
 
     def get_context_data(self, **kwargs):
-        foundations = Institution.objects.filter(type=0)
-        organizations = Institution.objects.filter(type=1)
-        local_collection = Institution.objects.filter(type=2)
+        foundations = Institution.objects.filter(type=0).order_by('name')
+        organizations = Institution.objects.filter(type=1).order_by('name')
+        local_collection = Institution.objects.filter(type=2).order_by('name')
         paginator_foundations = Paginator(foundations, 5)
         paginator_organizations = Paginator(organizations, 5)
         paginator_collection = Paginator(local_collection, 5)
