@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.db.models import Sum
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView
 
@@ -50,4 +50,4 @@ class RegisterView(CreateView):
     success_url = reverse_lazy('login')
     form_class = RegisterForm
 
-
+# strongPassword100%
