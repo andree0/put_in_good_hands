@@ -64,6 +64,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'put_in_good_hands_app.context_processors.metadata',
             ],
         },
     },
@@ -108,6 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGOUT_REDIRECT_URL = 'landing_page'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/

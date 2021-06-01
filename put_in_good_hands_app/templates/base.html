@@ -9,6 +9,26 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   </head>
   <body>
+{% if request.get_full_path == '/register/' or request.get_full_path == '/login/'%}
+  <header>
+    {% else %}
+  <header class="header--main-page">
+{% endif %}
+    <nav class="container container--70">
+      {% if user.is_authenticated %}
+        {% include "profile-menu.html" %}
+      {% else %}
+        {% include "buttons-login-register.html" %}
+      {% endif %}
+
+      {% include "menu-list-border.html" %}
+    </nav>
+    {% if request.get_full_path != '/register/' %}
+      {% if request.get_full_path != '/login/' %}
+        {% include "slogan.html" %}
+      {% endif %}
+    {% endif %}
+  </header>
 
   {% block body %}
   {% endblock %}
