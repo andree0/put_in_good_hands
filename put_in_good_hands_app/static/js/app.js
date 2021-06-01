@@ -72,6 +72,25 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   /**
+   * Register Form
+   */
+  const registerForm = document.querySelector("form#register_form");
+  const labelsRegister = registerForm.querySelectorAll("label");
+  labelsRegister.forEach(e => e.remove())
+  const inputsRegister = registerForm.querySelectorAll("input");
+  const buttonsRegister = registerForm.querySelector(
+      "div.form-group--buttons");
+  inputsRegister.forEach(e => {
+    if (e.className != "btn") {
+      const newDiv = document.createElement("div");
+      newDiv.className = "form-group";
+      registerForm.append(newDiv);
+      newDiv.append(e);
+      registerForm.append(buttonsRegister);
+    }
+  })
+
+  /**
    * Form Select
    */
   class FormSelect {
