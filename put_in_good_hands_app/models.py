@@ -4,6 +4,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 from put_in_good_hands_app.validators import (
     validate_address,
+    validate_pick_up_date,
     validate_zip_code,
 )
 
@@ -41,7 +42,7 @@ class Donation(models.Model):
     city = models.CharField(max_length=128)
     zip_code = models.CharField(max_length=6, validators=[validate_zip_code],
                                 help_text="XX-XXX")
-    pick_up_date = models.DateField()
+    pick_up_date = models.DateField(validators=[validate_pick_up_date])
     pick_up_time = models.TimeField()
     pick_up_comment = models.CharField(max_length=255, blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,
