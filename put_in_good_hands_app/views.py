@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView
 
-from put_in_good_hands_app.forms import CustomUserCreationForm
+from put_in_good_hands_app.forms import RegisterForm
 from put_in_good_hands_app.models import Donation, Institution
 
 
@@ -48,7 +48,6 @@ class RegisterView(CreateView):
     model = User
     template_name = "register.html"
     success_url = reverse_lazy('login')
-    form_class = CustomUserCreationForm
+    form_class = RegisterForm
 
-    # def post(self, request, *args, **kwargs):
 
