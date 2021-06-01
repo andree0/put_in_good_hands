@@ -1,0 +1,11 @@
+{% if page_nr == foundations.number %}
+<li>
+    <a class="btn btn--small btn--without-border active" data-page="{{ page_nr }}"
+       href="#help?page={{ page_nr }}">{{ page_nr }}</a>
+</li>
+{% else %}
+<li>
+    <a class="btn btn--small btn--without-border" data-page="{{ page_nr }}"
+       href="#help?page={{ page_nr }}">{{ page_nr }}</a>
+</li>
+{% endif %}

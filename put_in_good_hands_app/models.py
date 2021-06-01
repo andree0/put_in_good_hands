@@ -24,7 +24,7 @@ class Institution(models.Model):
 
     name = models.CharField(max_length=255)
     description = models.TextField()
-    type = models.IntegerField(choices=TYPES, default=TYPES[0])
+    type = models.IntegerField(choices=TYPES, default=TYPES[0][0])
     categories = models.ManyToManyField(Category)
 
     def __str__(self):
