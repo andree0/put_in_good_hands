@@ -1,9 +1,10 @@
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.db.models import Sum
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, TemplateView
+from django.views.generic import CreateView, TemplateView, View
 
 from put_in_good_hands_app.forms import RegisterForm
 from put_in_good_hands_app.models import Donation, Institution
@@ -40,8 +41,25 @@ class AddDonationView(TemplateView):
     template_name = "form.html"
 
 
-class LoginView(TemplateView):
+class CustomLoginView(View):
     template_name = "login.html"
+    context = {}
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
+
+    def post(self, request, *args, **kwargs):
+        username = request.POST.get('email')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is None and User.objects.filter(username=username):
+            self.context['message'] = "Nieprawidłowe hasło !"
+            return render(request, self.template_name, self.context)
+        elif user is not None:
+            login(request, user)
+            return redirect(reverse_lazy('landing_page'))
+        else:
+            return redirect(reverse_lazy('register'))
 
 
 class RegisterView(CreateView):
