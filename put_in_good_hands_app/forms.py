@@ -94,6 +94,22 @@ class DonationForm4(forms.ModelForm):
         fields = ('address', 'city', 'zip_code', 'phone_number',
                   'pick_up_date', 'pick_up_time', 'pick_up_comment', )
         widgets = {
+            'address': forms.TextInput(attrs={
+                'maxlength': 128
+            }),
+            'city': forms.TextInput(attrs={
+                'maxlength': 64
+            }),
+            'zip_code': forms.NumberInput(attrs={
+                'pattern': "[0-9]{2}-[0-9]{3}"
+            }),
+            'phone_number': forms.NumberInput(attrs={
+                'type': 'tel',
+                'pattern': "[0-9]{3}[0-9]{3}[0-9]{3}"
+            }),
             'pick_up_date': forms.SelectDateWidget,
             'pick_up_time': forms.TimeInput,
+            'pick_up_comment': forms.Textarea(attrs={
+                 'maxlength': 255
+            })
         }

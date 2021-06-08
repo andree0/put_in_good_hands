@@ -43,16 +43,32 @@ class LandingPageView(TemplateView):
             'local_collection': local_collection,
         }
 
+#
+# class AddDonationView(SessionWizardView):
+#     template_name = "form.html"
+#     form_list = [DonationForm1, DonationForm2, DonationForm3, DonationForm4]
+#
+#     # def get_context_data(self, **kwargs):
+#     #     return {'category_list': Category.objects.all()}
+#
+#     def done(self, form_list, **kwargs):
+#         do_something_with_the_form_data(form_list)
+#         return render(self.request, 'form-confirmation.html', {
+#             'form_data': [form.cleaned_data for form in form_list],
+#         })
 
-class AddDonationView(SessionWizardView):
+
+class AddDonationView(View):
     template_name = "form.html"
-    form_list = [DonationForm1, DonationForm2, DonationForm3, DonationForm4]
+    context = {}
 
-    def done(self, form_list, **kwargs):
-        do_something_with_the_form_data(form_list)
-        return render(self.request, 'form-confirmation.html', {
-            'form_data': [form.cleaned_data for form in form_list],
-        })
+    def get(self, request, *args, **kwargs):
+        self.context['category_list'] = Category.objects.all()
+        self.context['institution_list'] = Institution.objects.all()
+        return render(request, self.template_name, self.context)
+
+    def post(self, request, *args, **kwargs):
+        return render(request, 'form-confirmation.html')
 
 
 class CustomLoginView(View):
@@ -83,3 +99,7 @@ class RegisterView(CreateView):
     form_class = RegisterForm
 
 # strongPassword100%
+
+
+class ProfileView(TemplateView):
+    template_name = "profile_details.html"

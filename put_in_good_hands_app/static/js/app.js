@@ -222,6 +222,7 @@ document.addEventListener("DOMContentLoaded", function() {
       // Previous step
       this.$prev.forEach(btn => {
         btn.addEventListener("click", e => {
+          console.log(this.currentStep)
           e.preventDefault();
           this.currentStep--;
           this.updateForm();

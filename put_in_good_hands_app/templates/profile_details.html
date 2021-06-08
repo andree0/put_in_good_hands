@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body %}
+<section class="login-page">
+  <h2>Twój profli</h2>
+  <div class="profile">
+    <div class="items">
+      <div class="label">
+        <h3>Imię: </h3>
+        <h3>Nazwisko: </h3>
+        <h3>Email: </h3>
+      </div>
+      <div class="value">
+        <p>{{ user.first_name }}</p>
+        <p>{{ user.last_name }}</p>
+        <p>{{ user.email }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -36,10 +36,10 @@ class Donation(models.Model):
     quantity = models.PositiveIntegerField()
     categories = models.ManyToManyField(Category)
     institution = models.ForeignKey(Institution, on_delete=models.PROTECT)
-    address = models.CharField(max_length=255, validators=[validate_address])
+    address = models.CharField(max_length=128, validators=[validate_address])
     phone_number = models.PositiveIntegerField(validators=[
         MinValueValidator(100000000), MaxValueValidator(999999999)])
-    city = models.CharField(max_length=128)
+    city = models.CharField(max_length=64)
     zip_code = models.CharField(max_length=6, validators=[validate_zip_code],
                                 help_text="XX-XXX")
     pick_up_date = models.DateField(validators=[validate_pick_up_date])
