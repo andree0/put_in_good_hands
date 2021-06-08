@@ -5,9 +5,10 @@ from django.db.models import Sum
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView, View
+from formtools.wizard.views import SessionWizardView
 
 from put_in_good_hands_app.forms import RegisterForm
-from put_in_good_hands_app.models import Donation, Institution
+from put_in_good_hands_app.models import Category, Donation, Institution
 
 
 class LandingPageView(TemplateView):
@@ -39,6 +40,9 @@ class LandingPageView(TemplateView):
 
 class AddDonationView(TemplateView):
     template_name = "form.html"
+
+    def get_context_data(self, **kwargs):
+        return {'category_list': Category.objects.all()}
 
 
 class CustomLoginView(View):
