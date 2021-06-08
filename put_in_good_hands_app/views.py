@@ -7,7 +7,13 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView, View
 from formtools.wizard.views import SessionWizardView
 
-from put_in_good_hands_app.forms import RegisterForm
+from put_in_good_hands_app.forms import (
+    RegisterForm,
+    DonationForm1,
+    DonationForm2,
+    DonationForm3,
+    DonationForm4,
+)
 from put_in_good_hands_app.models import Category, Donation, Institution
 
 
@@ -38,11 +44,18 @@ class LandingPageView(TemplateView):
         }
 
 
-class AddDonationView(TemplateView):
+class AddDonationView(SessionWizardView):
     template_name = "form.html"
+    form_list = [DonationForm1, DonationForm2, DonationForm3, DonationForm4]
 
-    def get_context_data(self, **kwargs):
-        return {'category_list': Category.objects.all()}
+    # def get_context_data(self, **kwargs):
+    #     return {'category_list': Category.objects.all()}
+
+    def done(self, form_list, **kwargs):
+        do_something_with_the_form_data(form_list)
+        return render(self.request, 'form-confirmation.html', {
+            'form_data': [form.cleaned_data for form in form_list],
+        })
 
 
 class CustomLoginView(View):
