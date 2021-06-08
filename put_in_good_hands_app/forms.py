@@ -1,8 +1,10 @@
+import datetime
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from put_in_good_hands_app.models import Category, Institution
+from put_in_good_hands_app.models import Category, Donation, Institution
 from put_in_good_hands_app.validators import (
     validate_address,
     validate_pick_up_date,
@@ -53,32 +55,45 @@ class RegisterForm(UserCreationForm):
         return user
 
 
-class DonationForm1(forms.Form):
-    categories = forms.ChoiceField(
-        choices=[(cat.pk, cat.name) for cat in Category.objects.all()],
-        widget=forms.CheckboxSelectMultiple)
+class DonationForm1(forms.ModelForm):
+
+    class Meta:
+        model = Donation
+        fields = ('categories', )
+        widgets = {
+            'categories': forms.CheckboxSelectMultiple
+        }
 
 
-class DonationForm2(forms.Form):
-    quantity = forms.IntegerField(widget=forms.NumberInput(attrs={
-        'min': 1
-    }))
+class DonationForm2(forms.ModelForm):
+
+    class Meta:
+        model = Donation
+        fields = ('quantity', )
+        widgets = {
+            'quantity': forms.NumberInput(attrs={
+                'min': 1
+            })
+        }
 
 
-class DonationForm3(forms.Form):
-    institution = forms.ChoiceField(
-        choices=[(ins.pk, ins.name) for ins in Institution.objects.all()],
-        widget=forms.RadioSelect
-    )
+class DonationForm3(forms.ModelForm):
+
+    class Meta:
+        model = Donation
+        fields = ('institution', )
+        widgets = {
+            'institution': forms.RadioSelect
+        }
 
 
-class DonationForm4(forms.Form):
-    address = forms.CharField(max_length=255, validators=[validate_address])
-    city = forms.CharField(max_length=128)
-    zip_code = forms.CharField(max_length=6, validators=[validate_zip_code])
-    phone_number = forms.IntegerField(
-        widget=forms.NumberInput(attrs={'min': 100000000, 'max': 999999999})
-    )
-    pick_up_date = forms.DateField(widget=forms.SelectDateWidget)
-    pick_up_time = forms.TimeField(widget=forms.TimeInput)
-    pick_up_comment = forms.CharField(max_length=255, widget=forms.Textarea)
+class DonationForm4(forms.ModelForm):
+
+    class Meta:
+        model = Donation
+        fields = ('address', 'city', 'zip_code', 'phone_number',
+                  'pick_up_date', 'pick_up_time', 'pick_up_comment', )
+        widgets = {
+            'pick_up_date': forms.SelectDateWidget,
+            'pick_up_time': forms.TimeInput,
+        }

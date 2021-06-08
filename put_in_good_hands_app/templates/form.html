@@ -6,19 +6,21 @@
   <div class="form--steps-instructions">
     <div class="form--steps-container">
       <h3>Ważne!</h3>
+      {% if wizard.steps.current == '0' or wizard.steps.current == '1' %}
       <p data-step="1" class="active">
         Uzupełnij szczegóły dotyczące Twoich rzeczy. Dzięki temu będziemy
         wiedzieć komu najlepiej je przekazać.
       </p>
-      <p data-step="2">
-        Uzupełnij szczegóły dotyczące Twoich rzeczy. Dzięki temu będziemy
-        wiedzieć komu najlepiej je przekazać.
-      </p>
-      <p data-step="3">
+      {% endif %}
+      {% if wizard.steps.current == '2' %}
+      <p data-step="3" class="active">
        Wybierz jedną, do
         której trafi Twoja przesyłka.
       </p>
-      <p data-step="4">Podaj adres oraz termin odbioru rzeczy.</p>
+      {% endif %}
+      {% if wizard.steps.current == '3' %}
+      <p data-step="4" class="active">Podaj adres oraz termin odbioru rzeczy.</p>
+      {% endif %}
     </div>
   </div>
 
@@ -35,11 +37,11 @@
           {{ wizard.form }}
       {% endif %}
       {% if wizard.steps.prev %}
-      <button name="wizard_goto_step" type="button" value="{{ wizard.steps.first }}">Wróć do początku</button>
-      <button name="wizard_goto_step" type="button" value="{{ wizard.steps.prev }}">Poprzedni krok</button>
+      <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">Wróć do początku</button>
+      <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Poprzedni krok</button>
       {% endif %}
       {% if wizard.steps.next %}
-      <button name="wizard_goto_step" type="button" value="{{ wizard.steps.next }}">Dalej</button>
+      <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.next }}">Dalej</button>
       {% endif %}
       {% if wizard.steps.current == wizard.steps.last %}
         <input type="submit" value="Potwierdzam"/>

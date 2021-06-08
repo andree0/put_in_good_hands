@@ -48,9 +48,6 @@ class AddDonationView(SessionWizardView):
     template_name = "form.html"
     form_list = [DonationForm1, DonationForm2, DonationForm3, DonationForm4]
 
-    # def get_context_data(self, **kwargs):
-    #     return {'category_list': Category.objects.all()}
-
     def done(self, form_list, **kwargs):
         do_something_with_the_form_data(form_list)
         return render(self.request, 'form-confirmation.html', {
