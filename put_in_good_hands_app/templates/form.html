@@ -91,37 +91,24 @@
 
 
 
-      <!-- STEP 4 -->
+      <!-- STEP 3 -->
       <div data-step="3">
         <h3>Wybierz organizacje, której chcesz pomóc:</h3>
 
+        {% for institution in institution_list %}
         <div class="form-group form-group--checkbox">
           <label>
-            <input type="radio" name="organization" value="old" />
+            <input type="radio" name="organization" value='{{ institution.pk }}' />
             <span class="checkbox radio"></span>
             <span class="description">
-              <div class="title">Fundacja “Bez domu”</div>
+              <div class="title">{{ institution.name }}</div>
               <div class="subtitle">
-                Cel i misja: Pomoc dla osób nie posiadających miejsca
-                zamieszkania
+                {{ institution.description }}
               </div>
             </span>
           </label>
         </div>
-
-        <div class="form-group form-group--checkbox">
-          <label>
-            <input type="radio" name="organization" value="old" />
-            <span class="checkbox radio"></span>
-            <span class="description">
-              <div class="title">Fundacja “Dla dzieci"</div>
-              <div class="subtitle">
-                Cel i misja: Pomoc osobom znajdującym się w trudnej sytuacji
-                życiowej.
-              </div>
-            </span>
-          </label>
-        </div>
+        {% endfor %}
 
         <div class="form-group form-group--buttons">
           <button type="button" class="btn prev-step">Wstecz</button>
@@ -129,7 +116,7 @@
         </div>
       </div>
 
-      <!-- STEP 5 -->
+      <!-- STEP 4 -->
       <div data-step="4">
         <h3>Podaj adres oraz termin odbioru rzecz przez kuriera:</h3>
 
@@ -146,13 +133,21 @@
 
             <div class="form-group form-group--inline">
               <label>
-                Kod pocztowy <input type="text" name="postcode" />
+                Kod pocztowy <input type="text" name="postcode"
+                                    pattern="[0-9]{2}-[0-9]{3}"
+                                    placeholder="00-000"
+              />
               </label>
             </div>
 
             <div class="form-group form-group--inline">
               <label>
-                Numer telefonu <input type="phone" name="phone" />
+                Numer telefonu <input
+                      type="tel"
+                      name="phone"
+                      pattern="[0-9]{3}[0-9]{3}[0-9]{3}"
+                      placeholder="123456789"
+              />
               </label>
             </div>
           </div>
@@ -181,7 +176,7 @@
         </div>
       </div>
 
-      <!-- STEP 6 -->
+      <!-- STEP 5 -->
       <div data-step="5">
         <h3>Podsumowanie Twojej darowizny</h3>
 
