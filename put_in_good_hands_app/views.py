@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
+from django.core.serializers import serialize
 from django.db.models import Sum
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
@@ -65,9 +66,27 @@ class AddDonationView(View):
     def get(self, request, *args, **kwargs):
         self.context['category_list'] = Category.objects.all()
         self.context['institution_list'] = Institution.objects.all()
+        self.context['categories'] = serialize(
+            'json', Category.objects.all())
+        self.context['institutions'] = serialize(
+            'json',
+            list(Institution.objects.all()), fields=['name', 'categories'])
         return render(request, self.template_name, self.context)
 
     def post(self, request, *args, **kwargs):
+        data = {
+            'quantity': request.POST.get("bags"),
+            'categories': request.POST.get("categories"),
+            'institution': request.POST.get("organization"),
+            'address': request.POST.get("address"),
+            'phone_number': request.POST.get("phone"),
+            'city': request.POST.get("city"),
+            'zip_code': request.POST.get("postcode"),
+            'pick_up_date': request.POST.get("data"),
+            'pick_up_time': request.POST.get("time"),
+            'pick_up_comment': request.POST.get("more_info"),
+            'user': request.user,
+        }
         return render(request, 'form-confirmation.html')
 
 

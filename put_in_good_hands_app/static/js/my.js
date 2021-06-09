@@ -53,3 +53,31 @@ btnPrev.forEach(btn => {
     })
 })
 
+// function getContext () {
+//     $.ajax({
+//         url: 'http://127.0.0.1:8000/add-donation/',
+//
+//     })
+// }
+
+const checkboxSpanCategories = document.querySelectorAll(
+    "span.checkbox");
+
+checkboxSpanCategories.forEach(cat => {
+    cat.addEventListener( "mousemove", () => {
+        const inputCat = cat.previousElementSibling
+        const categories = JSON.parse(document.getElementById("categories").textContent)
+        const institutions = JSON.parse(document.getElementById("institutions").textContent)
+        institutions[0] = '{';
+        categories[0] = '{';
+        institutions[-1] = '}';
+        categories[-1] = '}';
+        const institutionObjects = JSON.parse(institutions);
+        const categoryObjects = JSON.parse(categories);
+
+        console.log(categoryObjects);
+        if (inputCat.checked) {
+            console.log(inputCat);
+        }
+    })
+})
