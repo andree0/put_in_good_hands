@@ -30,6 +30,9 @@ function activeDiv (divForm) {
 }
 btnNext.forEach(btn => {
     btn.addEventListener("click", () => {
+        if (currentStep == 1) {
+            filterCategory();
+        }
         currentStep++
         spanCounter.innerText = currentStep
         activeDiv(divForm);
@@ -53,31 +56,47 @@ btnPrev.forEach(btn => {
     })
 })
 
-// function getContext () {
-//     $.ajax({
-//         url: 'http://127.0.0.1:8000/add-donation/',
-//
-//     })
-// }
-
 const checkboxSpanCategories = document.querySelectorAll(
     "span.checkbox");
 
-checkboxSpanCategories.forEach(cat => {
-    cat.addEventListener( "mousemove", () => {
-        const inputCat = cat.previousElementSibling
-        const categories = JSON.parse(document.getElementById("categories").textContent)
-        const institutions = JSON.parse(document.getElementById("institutions").textContent)
-        institutions[0] = '{';
-        categories[0] = '{';
-        institutions[-1] = '}';
-        categories[-1] = '}';
-        const institutionObjects = JSON.parse(institutions);
-        const categoryObjects = JSON.parse(categories);
-
-        console.log(categoryObjects);
-        if (inputCat.checked) {
-            console.log(inputCat);
+function filterCategory () {
+    const categories = JSON.parse(document.getElementById(
+        "categories").textContent)
+    const institutions = JSON.parse(document.getElementById(
+        "institutions").textContent)
+    institutions[0] = '{';
+    categories[0] = '{';
+    institutions[-1] = '}';
+    categories[-1] = '}';
+    const institutionObjects = JSON.parse(institutions);
+    const categoryObjects = JSON.parse(categories);
+    institutionObjects.forEach((i) => {
+        const inputInst = document.querySelector(
+            `div[data-step="3"] input[value="${i.pk}"`);
+        const divStep3 = inputInst.parentElement.parentElement
+        divStep3.setAttribute("hidden", "")
+        const iCat = i.fields.categories
+        if (iCat.length) {
+            console.log(inputInst);
+            console.log(iCat);
+            checkboxSpanCategories.forEach(cat => {
+                const inputCat = cat.previousElementSibling
+                if (inputCat.checked) {
+                    console.log(inputCat);
+                    iCat.forEach((c) => {
+                        console.log("dziła");
+                        if (c == inputCat.value) {
+                            divStep3.removeAttribute("hidden")
+                        }
+                    })
+                }
+            })
         }
     })
-})
+}
+
+function confirmData () {
+    const divSummary = document.querySelector("div.summary");
+    const bagInput = document.querySelector("input[name='bags']");
+    
+}

@@ -70,7 +70,7 @@ class AddDonationView(View):
             'json', Category.objects.all())
         self.context['institutions'] = serialize(
             'json',
-            list(Institution.objects.all()), fields=['name', 'categories'])
+            Institution.objects.all(), fields=['name', 'categories'])
         return render(request, self.template_name, self.context)
 
     def post(self, request, *args, **kwargs):
@@ -87,6 +87,7 @@ class AddDonationView(View):
             'pick_up_comment': request.POST.get("more_info"),
             'user': request.user,
         }
+        Donation.objects.create(**data)
         return render(request, 'form-confirmation.html')
 
 
