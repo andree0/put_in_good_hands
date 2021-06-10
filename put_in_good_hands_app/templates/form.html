@@ -48,11 +48,6 @@
     <form action="" method="POST" id="multistep">{% csrf_token %}
       <!-- STEP 1: class .active is switching steps -->
       <div data-step="1" class="active">
-<!--        {% if errors %}-->
-<!--          {% for er in errors %}-->
-<!--        <p><span style="color: crimson; font-size: 14px; ">{{ er }}</span></p>-->
-<!--          {% endfor %}-->
-<!--        {% endif %}-->
         {% if messages %}
             {% for message in messages %}
             <p style="color: crimson; font-size: 14px; ">{{ message }}</p>
