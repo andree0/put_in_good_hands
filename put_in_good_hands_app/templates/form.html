@@ -21,7 +21,9 @@
       <p data-step="4">Podaj adres oraz termin odbioru rzeczy.</p>
     </div>
   </div>
-
+    {% if confirm %}
+      {% include "form-confirmation.html" %}
+    {% endif %}
   <div class="form--steps-container">
     <div class="form--steps-counter">Krok <span>1</span>/5</div>
 <!--    <form action="" method="post">{% csrf_token %}-->
@@ -46,7 +48,7 @@
 <!--      {% endif %}-->
 <!--    </form>-->
 
-    <form action="form-confirmation.html" method="post" id="multistep">{% csrf_token %}
+    <form action="" method="POST" id="multistep">{% csrf_token %}
       <!-- STEP 1: class .active is switching steps -->
       <div data-step="1" class="active">
         <h3>Zaznacz co chcesz oddać:</h3>

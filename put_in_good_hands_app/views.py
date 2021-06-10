@@ -1,12 +1,13 @@
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.core.serializers import serialize
 from django.db.models import Sum
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, reverse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView, View
-from formtools.wizard.views import SessionWizardView
+# from formtools.wizard.views import SessionWizardView
 
 from put_in_good_hands_app.forms import (
     RegisterForm,
@@ -16,6 +17,7 @@ from put_in_good_hands_app.forms import (
     DonationForm4,
 )
 from put_in_good_hands_app.models import Category, Donation, Institution
+from put_in_good_hands_app.validators import validate_zip_code
 
 
 class LandingPageView(TemplateView):
@@ -44,13 +46,11 @@ class LandingPageView(TemplateView):
             'local_collection': local_collection,
         }
 
-#
+# Alternatywna droga do formularzy kilku krokowych
+
 # class AddDonationView(SessionWizardView):
 #     template_name = "form.html"
 #     form_list = [DonationForm1, DonationForm2, DonationForm3, DonationForm4]
-#
-#     # def get_context_data(self, **kwargs):
-#     #     return {'category_list': Category.objects.all()}
 #
 #     def done(self, form_list, **kwargs):
 #         do_something_with_the_form_data(form_list)
@@ -59,11 +59,11 @@ class LandingPageView(TemplateView):
 #         })
 
 
-class AddDonationView(View):
+class AddDonationView(LoginRequiredMixin, View):
     template_name = "form.html"
     context = {}
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, errors=None, *args, **kwargs):
         self.context['category_list'] = Category.objects.all()
         self.context['institution_list'] = Institution.objects.all()
         self.context['categories'] = serialize(
@@ -87,8 +87,22 @@ class AddDonationView(View):
             'pick_up_comment': request.POST.get("more_info"),
             'user': request.user,
         }
-        Donation.objects.create(**data)
-        return render(request, 'form-confirmation.html')
+        errors = []
+        try:
+            data['quantity'] = int(data['quantity'])
+            data['categories'] = [int(i) for i in data['categories']]
+            data['institution'] = int(data['institution'])
+            data['phone_number'] = int(data['phone_number'])
+        except ValueError:
+            errors.append("""Niewłaściwy format danych 
+            (błąd w którymś z podanych pól: 
+            ilość worków, kategorie, instytucje, numer telefonu)""")
+            return redirect(reverse('add-donation'), errors)
+        validate_zip_code(data['zip_code'])
+
+
+        # Donation.objects.create(**data)
+        return redirect(reverse('confirm'))
 
 
 class CustomLoginView(View):
@@ -121,5 +135,9 @@ class RegisterView(CreateView):
 # strongPassword100%
 
 
-class ProfileView(TemplateView):
+class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = "profile_details.html"
+
+
+class ConfirmDonationView(TemplateView):
+    template_name = "form-confirmation.html"
