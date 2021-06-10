@@ -109,14 +109,14 @@ class AddDonationView(LoginRequiredMixin, View):
             categories = [int(i) for i in categories]
             data['institution'] = int(data['institution'])
             data['phone_number'] = int(data['phone_number'])
-        except (ValueError, TypeError, ):
+        except ValueError:
             add_message(request, ERROR,
                         "Błędy w formularzu. Wypełnij jeszcze raz.")
 
         if len(data['zip_code']) == 6 and data['zip_code'][2] == '-':
             zipcode_numbers_str = data['zip_code'].split("-")
             try:
-                zipcode_numbers_int = [int(i) for i in zipcode_numbers_str]
+                _ = [int(i) for i in zipcode_numbers_str]
             except ValueError:
                 add_message(request, ERROR, "Zły format kodu pocztowego.")
         else:
@@ -160,7 +160,7 @@ class AddDonationView(LoginRequiredMixin, View):
         try:
             data['institution'] = get_object_or_404(Institution,
                                                     pk=data['institution'])
-        except Http404:
+        except (Http404, ValueError, ):
             add_message(request, ERROR, "Nie wybrałeś instytucji.")
 
         if data['pick_up_comment'] == "":
@@ -201,9 +201,6 @@ class RegisterView(CreateView):
     template_name = "register.html"
     success_url = reverse_lazy('login')
     form_class = RegisterForm
-
-
-# strongPassword100%
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
