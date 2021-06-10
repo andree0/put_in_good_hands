@@ -21,9 +21,6 @@
       <p data-step="4">Podaj adres oraz termin odbioru rzeczy.</p>
     </div>
   </div>
-    {% if confirm %}
-      {% include "form-confirmation.html" %}
-    {% endif %}
   <div class="form--steps-container">
     <div class="form--steps-counter">Krok <span>1</span>/5</div>
 <!--    <form action="" method="post">{% csrf_token %}-->
@@ -51,6 +48,16 @@
     <form action="" method="POST" id="multistep">{% csrf_token %}
       <!-- STEP 1: class .active is switching steps -->
       <div data-step="1" class="active">
+<!--        {% if errors %}-->
+<!--          {% for er in errors %}-->
+<!--        <p><span style="color: crimson; font-size: 14px; ">{{ er }}</span></p>-->
+<!--          {% endfor %}-->
+<!--        {% endif %}-->
+        {% if messages %}
+            {% for message in messages %}
+            <p style="color: crimson; font-size: 14px; ">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
         <h3>Zaznacz co chcesz oddać:</h3>
 
         {% for cat in category_list %}
