@@ -3,6 +3,7 @@ import datetime
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.contrib.auth.views import LoginView
 from django.contrib.messages import add_message, ERROR, get_messages
 from django.core.paginator import Paginator
 from django.core.serializers import serialize
@@ -186,23 +187,24 @@ class AddDonationView(LoginRequiredMixin, View):
         return redirect(reverse('confirm'))
 
 
-class CustomLoginView(View):
+class CustomLoginView(LoginView):
     template_name = "login.html"
     context = {}
 
     def get(self, request, *args, **kwargs):
-        return render(request, self.template_name)
+        self.context['next'] = request.GET.get('next')
+        return render(request, self.template_name, self.context)
 
     def post(self, request, *args, **kwargs):
         username = request.POST.get('email')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
         if user is None and User.objects.filter(username=username):
-            self.context['message'] = "Nieprawidłowe hasło !"
-            return render(request, self.template_name, self.context)
+            add_message(request, ERROR, "Nieprawidłowe hasło !")
+            return redirect(reverse('login'))
         elif user is not None:
             login(request, user)
-            return redirect(reverse_lazy('landing_page'))
+            return redirect(self.get_success_url())
         else:
             return redirect(reverse_lazy('register'))
 
