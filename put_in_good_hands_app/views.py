@@ -78,6 +78,7 @@ class AddDonationView(LoginRequiredMixin, View):
         return render(request, self.template_name, self.context)
 
     def post(self, request, *args, **kwargs):
+        # downloading data from form
         data = {
             'quantity': request.POST.get("bags"),
             'institution': request.POST.get("organization"),
@@ -85,20 +86,24 @@ class AddDonationView(LoginRequiredMixin, View):
             'phone_number': request.POST.get("phone"),
             'city': request.POST.get("city"),
             'zip_code': request.POST.get("postcode"),
-            'pick_up_date': request.POST.get("data"),
+            'pick_up_date': request.POST.get("date"),
             'pick_up_time': request.POST.get("time"),
             'user': request.user,
         }
+        # downloading list of category's primary keys from form
         categories = request.POST.getlist("categories")
 
+        # validation that required fields is not empty
         if "" in [val for key, val in data.items()]:
             add_message(
                 request, ERROR,
                 "Uzupełnij wymagane pola. Uwagi dla kuriera nie są wymagane.")
             return redirect(reverse('add-donation'))
 
+        # downloading value of comment field which it can be empty
         data['pick_up_comment'] = request.POST.get("more_info")
 
+        # validation all fields, continued
         if len(data['phone_number']) != 9:
             add_message(
                 request, ERROR,
@@ -133,6 +138,10 @@ class AddDonationView(LoginRequiredMixin, View):
             add_message(request, ERROR,
                         "Za długa nazwa miasta (max. 64 znaki).")
 
+        if len(data['pick_up_comment']) > 255:
+            add_message(request, ERROR,
+                        "Za dużo uwag dla kuriera (max. 255 znaków).")
+
         if len(data['pick_up_date']) == 10 and data['pick_up_date'
         ][4] == '-' and data['pick_up_date'][7] == '-':
             el_data_str = data['pick_up_date'].split("-")
@@ -163,13 +172,15 @@ class AddDonationView(LoginRequiredMixin, View):
         except (Http404, ValueError, ):
             add_message(request, ERROR, "Nie wybrałeś instytucji.")
 
-        if data['pick_up_comment'] == "":
-            data['pick_up_comment'] = "Brak uwag."
-
+        # The end validation data form form
+        # If form has some errors, return clear form
+        # and display messages about errors
         storage = get_messages(request)
         if len(storage):
             return redirect(reverse('add-donation'))
 
+        # If form is correct, create new object 'Donation'
+        # and save him to database
         new_donation = Donation.objects.create(**data)
         new_donation.categories.set(categories)
         return redirect(reverse('confirm'))
