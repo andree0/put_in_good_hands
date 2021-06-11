@@ -56,7 +56,7 @@ $(document).ready(function() {
             bagName = 'worki'
         }
         $("div[data-step='5'] span.summary--text").first()
-            .text(`${$("input[name='bags']").val() ? $("input[name='bags']").val() : 0} ${bagName} w kategorii ${checkedCategory}`)
+            .text(`${$("input[name='bags']").val() ? $("input[name='bags']").val() : 0} ${bagName} w kategorii "${checkedCategory}"`)
 
         $("div[data-step='5'] span.summary--text").last()
             .text(`Dla fundacji "${$("div[data-step='3'] input[name='organization']:checked").next().next().children().first().text()}"`)
