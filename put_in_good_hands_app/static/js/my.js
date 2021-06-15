@@ -118,11 +118,18 @@ $(document).ready(function() {
         let dateInput = false
         let timeInput = false
     
-        if ($("input[name='address']").val() && /\d/.test($("input[name='address']").val())) {
-            address = true
+        if ($("input[name='address']").val()) {
+            if (/\d/.test($("input[name='address']").val())) {
+                $("input[name='address']").css("border", "1px solid #3c3c3c")
+                address = true
+            } else {
+                $("input[name='address']").css("border-color", "red")
+                address = false
+            }            
         } else {
             address = false
         }
+
 
         if ($("input[name='city']").val()) {
             city = true
@@ -130,17 +137,31 @@ $(document).ready(function() {
             city = false
         }
 
-        if (/[0-9]{2}-[0-9]{3}/.test($("input[name='postcode']").val())) {
-            postcode = true
+        if ($("input[name='postcode']").val()) {
+            if (/[0-9]{2}-[0-9]{3}/.test($("input[name='postcode']").val()) && $("input[name='postcode']").val().length == 6) {
+                $("input[name='postcode']").css("border", "1px solid #3c3c3c")
+                postcode = true
+            } else {
+                $("input[name='postcode']").css("border-color", "red")
+                postcode = false
+            }            
         } else {
             postcode = false
         }
 
-        if (/[1-9]{1}[0-9]{8}/.test($("input[name='phone']").val())) {
-            phone = true
+
+        if($("input[name='phone']").val()) {
+            if (/[1-9]{1}[0-9]{8}/.test($("input[name='phone']").val()) && $("input[name='phone']").val().length == 9) {
+                $("input[name='phone']").css("border", "1px solid #3c3c3c")
+                phone = true
+            } else {
+                $("input[name='phone']").css("border-color", "red")
+                phone = false
+            }            
         } else {
             phone = false
         }
+
         const selectedDateArray = $("input[name='date']").val().split('-')
         const currentDate = new Date()
         const inputDay = parseInt(selectedDateArray[2])
@@ -149,8 +170,10 @@ $(document).ready(function() {
 
         if ($("input[name='date']").val()) {
             if (new Date(inputYear, inputMonth, inputDay) > currentDate) {
+                $("input[name='date']").css("border", "1px solid #3c3c3c")
                 dateInput = true
             } else {
+                $("input[name='date']").css("border-color", "red")
                 dateInput = false
             }
         } else {
