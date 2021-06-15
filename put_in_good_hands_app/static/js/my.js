@@ -74,6 +74,12 @@ $(document).ready(function() {
 
     }
 
+    function clearCheckedOrganization () {
+        $("input[name='organization']").each(function () {
+            this.checked = false 
+        })
+    }
+
     $("form#multistep .next-step").attr("disabled", true)
 
     $("div[data-step='1'] div.form-group--checkbox").click(function () {
@@ -106,7 +112,7 @@ $(document).ready(function() {
             } 
             if (checkInputOrganization) {
                 $("div[data-step='3'] button.next-step").removeAttr("disabled")
-            }
+            }         
         })
     })
 
@@ -203,6 +209,11 @@ $(document).ready(function() {
 
     $("form#multistep").change(function () {
         validationStep4();
+    })
+
+    $("input[name='categories']").change(function () {
+        $("div[data-step='3'] button.next-step").attr("disabled", true)
+        clearCheckedOrganization();
     })
 
     $("form#multistep .next-step").click(function () {
