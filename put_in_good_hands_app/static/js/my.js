@@ -141,9 +141,18 @@ $(document).ready(function() {
         } else {
             phone = false
         }
+        const selectedDateArray = $("input[name='date']").val().split('-')
+        const currentDate = new Date()
+        const inputDay = parseInt(selectedDateArray[2])
+        const inputMonth = parseInt(selectedDateArray[1]) - 1
+        const inputYear = parseInt(selectedDateArray[0])
 
         if ($("input[name='date']").val()) {
-            dateInput = true
+            if (new Date(inputYear, inputMonth, inputDay) > currentDate) {
+                dateInput = true
+            } else {
+                dateInput = false
+            }
         } else {
             dateInput = false
         }        
