@@ -74,6 +74,105 @@ $(document).ready(function() {
 
     }
 
+    $("form#multistep .next-step").attr("disabled", true)
+
+    $("div[data-step='1'] div.form-group--checkbox").click(function () {
+        let checkInputCategory = false
+        $("input[name='categories']").each(function () {
+            if ($(this).prop("checked")) {
+                checkInputCategory = true
+            } 
+            if (checkInputCategory) {
+                $("form#multistep .next-step").first().removeAttr("disabled")
+            } else {
+                $("form#multistep .next-step").first().attr("disabled", true)
+            }       
+        })
+    })
+
+    $("div[data-step='2'] input[name='bags']").change(function () {
+        if ($(this).val() > 0) {
+            $("div[data-step='2'] button.next-step").removeAttr("disabled")
+        } else {
+            $("div[data-step='2'] button.next-step").attr("disabled", true)
+        }
+    })
+
+    $("div[data-step='3'] div.form-group--checkbox").click(function () {
+        let checkInputOrganization = false
+        $("input[name='organization']").each(function () {
+            if ($(this).prop("checked")) {
+                checkInputOrganization = true
+            } 
+            if (checkInputOrganization) {
+                $("div[data-step='3'] button.next-step").removeAttr("disabled")
+            }
+        })
+    })
+
+    function validationStep4 () {
+        let address = false
+        let city = false
+        let postcode = false
+        let phone = false
+        let dateInput = false
+        let timeInput = false
+    
+        if ($("input[name='address']").val() && /\d/.test($("input[name='address']").val())) {
+            address = true
+        } else {
+            address = false
+        }
+
+        if ($("input[name='city']").val()) {
+            city = true
+        } else {
+            city = false
+        }
+
+        if (/[0-9]{2}-[0-9]{3}/.test($("input[name='postcode']").val())) {
+            postcode = true
+        } else {
+            postcode = false
+        }
+
+        if (/[1-9]{1}[0-9]{8}/.test($("input[name='phone']").val())) {
+            phone = true
+        } else {
+            phone = false
+        }
+
+        if ($("input[name='date']").val()) {
+            dateInput = true
+        } else {
+            dateInput = false
+        }        
+
+        if ($("input[name='time']").val()) {
+            timeInput = true
+        } else {
+            timeInput = false
+        } 
+
+        if (address && city && postcode && phone && dateInput && timeInput) {
+            $("div[data-step='4'] button.next-step").removeAttr("disabled")
+        } else {
+            $("div[data-step='4'] button.next-step").attr("disabled", true)
+        }
+    }
+
+    $("form#multistep").submit(function (e) {
+        if (!$("div[data-step='5']").hasClass("active")) {
+            e.preventDefault()
+        }
+        
+    })
+
+
+    $("form#multistep").change(function () {
+        validationStep4();
+    })
+
     $("form#multistep .next-step").click(function () {
         if (currentStep == 1) {
             filterCategory();
