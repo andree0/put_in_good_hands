@@ -1,4 +1,5 @@
 import datetime
+from typing import List
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -11,7 +12,7 @@ from django.db.models import Sum
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, TemplateView, View
+from django.views.generic import CreateView, ListView, TemplateView, View
 # from formtools.wizard.views import SessionWizardView
 
 from put_in_good_hands_app.forms import (
@@ -222,3 +223,8 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
 class ConfirmDonationView(TemplateView):
     template_name = "form-confirmation.html"
+
+
+class MyDonationView(ListView):
+    model = Donation
+    template_name = "donation_list.html"

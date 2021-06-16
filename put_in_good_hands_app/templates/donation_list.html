@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body %}
+  <h2>Twoje dary</h2>
+  <div class="donation-list">
+    <table>
+        <thead>
+            <tr>
+                <th>Ilość worków</th>
+                <th>Wybrana instytucja</th>
+                <th>Kategorie</th>
+                <th>Data odbioru</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for donation in donation_list %}
+            <tr>
+                <td>{{ donation.quantity }}</td>
+                <td>{{ donation.institution.name}}</td>
+                <td>
+                    {% for cat in donation.categories.all %}
+                        {% if forloop.first %}
+                            {{ cat.name }}
+                        {% else %}
+                            | {{ cat.name }}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{ donation.pick_up_date }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+  </div>
+{% endblock %}
