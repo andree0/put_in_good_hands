@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'put_in_good_hands_app',
-    'formtools'
+    # 'formtools'
 ]
 
 MIDDLEWARE = [
@@ -115,6 +115,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LOGOUT_REDIRECT_URL = 'landing_page'
+
+LOGIN_URL = 'login'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/

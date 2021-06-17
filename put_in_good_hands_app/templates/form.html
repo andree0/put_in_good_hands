@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block header %}
+<header class="header--form-page">
+  {% include "nav-header.html" %}
+
+  {% include "slogan-form.html" %}
+</header>
+{% endblock %}
+
 {% block body %}
 <section class="form--steps">
   <div class="form--steps-instructions">
@@ -21,9 +29,6 @@
       <p data-step="4">Podaj adres oraz termin odbioru rzeczy.</p>
     </div>
   </div>
-    {% if confirm %}
-      {% include "form-confirmation.html" %}
-    {% endif %}
   <div class="form--steps-container">
     <div class="form--steps-counter">Krok <span>1</span>/5</div>
 <!--    <form action="" method="post">{% csrf_token %}-->
@@ -51,6 +56,11 @@
     <form action="" method="POST" id="multistep">{% csrf_token %}
       <!-- STEP 1: class .active is switching steps -->
       <div data-step="1" class="active">
+        {% if messages %}
+            {% for message in messages %}
+            <p style="color: crimson; font-size: 14px; ">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
         <h3>Zaznacz co chcesz oddać:</h3>
 
         {% for cat in category_list %}
@@ -120,7 +130,7 @@
 
       <!-- STEP 4 -->
       <div data-step="4">
-        <h3>Podaj adres oraz termin odbioru rzecz przez kuriera:</h3>
+        <h3>Podaj adres oraz termin odbioru rzeczy przez kuriera:</h3>
 
         <div class="form-section form-section--columns">
           <div class="form-section--column">
@@ -147,7 +157,7 @@
                 Numer telefonu <input
                       type="tel"
                       name="phone"
-                      pattern="[0-9]{3}[0-9]{3}[0-9]{3}"
+                      pattern="[1-9]{1}[0-9]{8}"
                       placeholder="123456789"
               />
               </label>
@@ -157,7 +167,7 @@
           <div class="form-section--column">
             <h4>Termin odbioru</h4>
             <div class="form-group form-group--inline">
-              <label> Data <input type="date" name="data" /> </label>
+              <label> Data <input type="date" name="date" /> </label>
             </div>
 
             <div class="form-group form-group--inline">
@@ -232,6 +242,5 @@
     </form>
   </div>
 </section>
-{{ categories|json_script:"categories" }}
 {{ institutions|json_script:"institutions" }}
 {% endblock %}

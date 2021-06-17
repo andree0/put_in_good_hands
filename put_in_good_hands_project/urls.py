@@ -28,4 +28,5 @@ urlpatterns = [
     path('add-donation/', v.AddDonationView.as_view(), name="add-donation"),
     path('profile-details/', v.ProfileView.as_view(), name="profile-details"),
     path('confirm/', v.ConfirmDonationView.as_view(), name="confirm"),
+    path('my-donation/', v.MyDonationView.as_view(), name="my-donation"),
 ]

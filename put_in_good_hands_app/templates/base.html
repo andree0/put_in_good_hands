@@ -6,27 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Oddaj w dobre ręce</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   </head>
   <body>
-{% if request.get_full_path == '/' %}
-  <header class="header--main-page">
-    {% else %}
-  <header>
-{% endif %}
-    <nav class="container container--70">
-      {% if user.is_authenticated %}
-        {% include "profile-menu.html" %}
-      {% else %}
-        {% include "buttons-login-register.html" %}
-      {% endif %}
-
-      {% include "menu-list-border.html" %}
-    </nav>
-    {% if request.get_full_path == '/' %}
-      {% include "slogan.html" %}
-    {% endif %}
-  </header>
+  {% block header %}
+  {% endblock %}
 
   {% block body %}
   {% endblock %}
@@ -66,6 +51,7 @@
         </div>
       </div>
     </footer>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="{% static 'js/app.js' %}"></script>
   <script src="{% static 'js/my.js' %}"></script>
   </body>

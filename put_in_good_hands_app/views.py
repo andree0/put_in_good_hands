@@ -1,12 +1,18 @@
+import datetime
+from typing import List
+
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.contrib.auth.views import LoginView
+from django.contrib.messages import add_message, ERROR, get_messages
 from django.core.paginator import Paginator
 from django.core.serializers import serialize
 from django.db.models import Sum
-from django.shortcuts import redirect, render, reverse
+from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, TemplateView, View
+from django.views.generic import CreateView, ListView, TemplateView, View
 # from formtools.wizard.views import SessionWizardView
 
 from put_in_good_hands_app.forms import (
@@ -17,7 +23,6 @@ from put_in_good_hands_app.forms import (
     DonationForm4,
 )
 from put_in_good_hands_app.models import Category, Donation, Institution
-from put_in_good_hands_app.validators import validate_zip_code
 
 
 class LandingPageView(TemplateView):
@@ -46,6 +51,7 @@ class LandingPageView(TemplateView):
             'local_collection': local_collection,
         }
 
+
 # Alternatywna droga do formularzy kilku krokowych
 
 # class AddDonationView(SessionWizardView):
@@ -63,7 +69,7 @@ class AddDonationView(LoginRequiredMixin, View):
     template_name = "form.html"
     context = {}
 
-    def get(self, request, errors=None, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         self.context['category_list'] = Category.objects.all()
         self.context['institution_list'] = Institution.objects.all()
         self.context['categories'] = serialize(
@@ -74,54 +80,132 @@ class AddDonationView(LoginRequiredMixin, View):
         return render(request, self.template_name, self.context)
 
     def post(self, request, *args, **kwargs):
+        # downloading data from form
         data = {
             'quantity': request.POST.get("bags"),
-            'categories': request.POST.get("categories"),
             'institution': request.POST.get("organization"),
             'address': request.POST.get("address"),
             'phone_number': request.POST.get("phone"),
             'city': request.POST.get("city"),
             'zip_code': request.POST.get("postcode"),
-            'pick_up_date': request.POST.get("data"),
+            'pick_up_date': request.POST.get("date"),
             'pick_up_time': request.POST.get("time"),
-            'pick_up_comment': request.POST.get("more_info"),
             'user': request.user,
         }
-        errors = []
+        # downloading list of category's primary keys from form
+        categories = request.POST.getlist("categories")
+
+        # validation that required fields is not empty
+        if "" in [val for key, val in data.items()]:
+            add_message(
+                request, ERROR,
+                "Uzupełnij wymagane pola. Uwagi dla kuriera nie są wymagane.")
+            return redirect(reverse('add-donation'))
+
+        # downloading value of comment field which it can be empty
+        data['pick_up_comment'] = request.POST.get("more_info")
+
+        # validation all fields, continued
+        if len(data['phone_number']) != 9:
+            add_message(
+                request, ERROR,
+                "Pole z numerem telefonu wymaga podania 9 cyfr.")
+
         try:
             data['quantity'] = int(data['quantity'])
-            data['categories'] = [int(i) for i in data['categories']]
+            categories = [int(i) for i in categories]
             data['institution'] = int(data['institution'])
             data['phone_number'] = int(data['phone_number'])
         except ValueError:
-            errors.append("""Niewłaściwy format danych 
-            (błąd w którymś z podanych pól: 
-            ilość worków, kategorie, instytucje, numer telefonu)""")
-            return redirect(reverse('add-donation'), errors)
-        validate_zip_code(data['zip_code'])
+            add_message(request, ERROR,
+                        "Błędy w formularzu. Wypełnij jeszcze raz.")
 
+        if len(data['zip_code']) == 6 and data['zip_code'][2] == '-':
+            zipcode_numbers_str = data['zip_code'].split("-")
+            try:
+                _ = [int(i) for i in zipcode_numbers_str]
+            except ValueError:
+                add_message(request, ERROR, "Zły format kodu pocztowego.")
+        else:
+            add_message(request, ERROR, "Zły format kodu pocztowego.")
 
-        # Donation.objects.create(**data)
+        if data['address'].isalpha():
+            add_message(request, ERROR, "Podaj numer budynku w polu adresu.")
+
+        if len(data['address']) > 128:
+            add_message(request, ERROR,
+                        "Adres jest za długi (max. 128 znaków).")
+
+        if len(data['city']) > 64:
+            add_message(request, ERROR,
+                        "Za długa nazwa miasta (max. 64 znaki).")
+
+        if len(data['pick_up_comment']) > 255:
+            add_message(request, ERROR,
+                        "Za dużo uwag dla kuriera (max. 255 znaków).")
+
+        if len(data['pick_up_date']) == 10 and data['pick_up_date'
+        ][4] == '-' and data['pick_up_date'][7] == '-':
+            el_data_str = data['pick_up_date'].split("-")
+            try:
+                el_data_int = [int(i) for i in el_data_str]
+                data['pick_up_date'] = datetime.date(*el_data_int)
+            except (ValueError, TypeError,):
+                add_message(request, ERROR, "Zły format daty.")
+        else:
+            add_message(request, ERROR, "Zły format daty.")
+
+        if data['pick_up_date'] <= datetime.date.today():
+            add_message(request, ERROR, "Proszę wybrać inną datę.")
+
+        if len(data['pick_up_time']) == 5 and data['pick_up_time'][2] == ':':
+            el_time_str = data['pick_up_time'].split(":")
+            try:
+                el_time_int = [int(i) for i in el_time_str]
+                data['pick_up_time'] = datetime.time(*el_time_int, second=0)
+            except (ValueError, TypeError,):
+                add_message(request, ERROR, "Zły format godziny.")
+        else:
+            add_message(request, ERROR, "Zły format godziny.")
+
+        try:
+            data['institution'] = get_object_or_404(Institution,
+                                                    pk=data['institution'])
+        except (Http404, ValueError, ):
+            add_message(request, ERROR, "Nie wybrałeś instytucji.")
+
+        # The end validation data form form
+        # If form has some errors, return clear form
+        # and display messages about errors
+        storage = get_messages(request)
+        if len(storage):
+            return redirect(reverse('add-donation'))
+
+        # If form is correct, create new object 'Donation'
+        # and save him to database
+        new_donation = Donation.objects.create(**data)
+        new_donation.categories.set(categories)
         return redirect(reverse('confirm'))
 
 
-class CustomLoginView(View):
+class CustomLoginView(LoginView):
     template_name = "login.html"
     context = {}
 
     def get(self, request, *args, **kwargs):
-        return render(request, self.template_name)
+        self.context['next'] = request.GET.get('next')
+        return render(request, self.template_name, self.context)
 
     def post(self, request, *args, **kwargs):
         username = request.POST.get('email')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
         if user is None and User.objects.filter(username=username):
-            self.context['message'] = "Nieprawidłowe hasło !"
-            return render(request, self.template_name, self.context)
+            add_message(request, ERROR, "Nieprawidłowe hasło !")
+            return redirect(reverse('login'))
         elif user is not None:
             login(request, user)
-            return redirect(reverse_lazy('landing_page'))
+            return redirect(self.get_success_url())
         else:
             return redirect(reverse_lazy('register'))
 
@@ -132,8 +216,6 @@ class RegisterView(CreateView):
     success_url = reverse_lazy('login')
     form_class = RegisterForm
 
-# strongPassword100%
-
 
 class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = "profile_details.html"
@@ -141,3 +223,20 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
 class ConfirmDonationView(TemplateView):
     template_name = "form-confirmation.html"
+
+
+class MyDonationView(ListView):
+    model = Donation
+    template_name = "donation_list.html"
+    ordering = ('is_taken', 'pick_up_date', )
+
+    def post(self, request, *args, **kwargs):
+        status = request.POST.get('status')
+        donation = get_object_or_404(Donation, pk=int(request.POST.get('pk')))
+        if status == 'Nieodebrany':
+            donation.is_taken = False
+        elif status == 'Odebrany':
+            donation.is_taken = True
+            donation.pick_up_date = datetime.date.today()
+        donation.save()
+        return redirect(reverse('my-donation'))
