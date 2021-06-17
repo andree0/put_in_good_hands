@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block header %}
+<header class="header--main-page">
+  {% include "nav-header.html" %}
+
+  {% include "slogan.html" %}
+</header>
+{% endblock %}
+
 {% block body %}
 <section id="stats" class="stats">
   <div class="container container--85">

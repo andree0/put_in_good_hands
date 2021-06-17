@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block header %}
+<header>
+  {% include "nav-header.html" %}
+</header>
+{% endblock %}
+
 {% block body %}
 <section class="login-page">
   <h2>Zaloguj się</h2>

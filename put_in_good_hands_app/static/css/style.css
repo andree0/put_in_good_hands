@@ -1830,40 +1830,27 @@ footer .bottom-line--icons a img {
 div.profile  {
   display: flex;
   font-size: 14px;
-  width: 500px;
-  padding-left: 100px;
+  padding-left: 300px;
 }
 
 div.profile > div {
   display: inline-flex;
 }
 
-.profile div {
-  font-size: 14px;
-}
-
 div.label  {
-  display: block;
   width: 150px;
 }
 
-.labels h3 {
-  display: block;
+.label h3 {
   box-sizing: border-box;
 }
 
 div.value  {
-  display: block;
   width: 400px;
 }
 
 div.value > p {
-    display: block;
     font-size: 1.17em;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
 }
 
 /* donation-list */

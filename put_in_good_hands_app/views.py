@@ -228,7 +228,7 @@ class ConfirmDonationView(TemplateView):
 class MyDonationView(ListView):
     model = Donation
     template_name = "donation_list.html"
-    ordering = ('is_taken', '-pick_up_date', )
+    ordering = ('is_taken', 'pick_up_date', )
 
     def post(self, request, *args, **kwargs):
         status = request.POST.get('status')

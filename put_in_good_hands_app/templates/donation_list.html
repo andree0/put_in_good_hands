@@ -1,10 +1,17 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block header %}
+<header>
+  {% include "nav-header.html" %}
+</header>
+{% endblock %}
+
 {% block body %}
+<section class="login-page">
   <h2>Moje dary</h2>
   <div class="donation-list">
-    <table class="table table-hover align-middle">
+    <table class="table table-hover align-middle mt-5">
         <thead class="text-center">
             <tr>
                 <th class="col-1">Ilość worków</th>
@@ -30,7 +37,7 @@
                 </td>
                 <td>{{ donation.pick_up_date }}</td>
                 <td>
-                    <form action="" method="POST" class="align-items-center">{% csrf_token %}
+                    <form action="" method="POST" class="align-items-center my-auto">{% csrf_token %}
                         <input type="hidden" value="{{ donation.pk }}" name="pk"/>
                         <div class="btn-group mx-auto" role="group">
                             <input type="submit" value="Odebrany" name="status" 
@@ -45,4 +52,5 @@
         </tbody>
     </table>
   </div>
+</section>
 {% endblock %}

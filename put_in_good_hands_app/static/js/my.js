@@ -201,7 +201,7 @@ $(document).ready(function() {
 
     $("form#multistep").submit(function (e) {
         if (!$("div[data-step='5']").hasClass("active")) {
-            e.preventDefault()
+            e.preventDefault();
         }
         
     })

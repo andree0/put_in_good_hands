@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block header %}
+<header class="header--form-page">
+  {% include "nav-header.html" %}
+
+  {% include "slogan-form.html" %}
+</header>
+{% endblock %}
+
 {% block body %}
 <section class="form--steps">
   <div class="form--steps-instructions">

@@ -1,0 +1,9 @@
+<nav class="container container--70">
+    {% if user.is_authenticated %}
+      {% include "profile-menu.html" %}
+    {% else %}
+      {% include "buttons-login-register.html" %}
+    {% endif %}
+
+    {% include "menu-list-border.html" %}
+  </nav>
