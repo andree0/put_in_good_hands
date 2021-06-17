@@ -228,3 +228,15 @@ class ConfirmDonationView(TemplateView):
 class MyDonationView(ListView):
     model = Donation
     template_name = "donation_list.html"
+    ordering = ('is_taken', '-pick_up_date', )
+
+    def post(self, request, *args, **kwargs):
+        status = request.POST.get('status')
+        donation = get_object_or_404(Donation, pk=int(request.POST.get('pk')))
+        if status == 'Nieodebrany':
+            donation.is_taken = False
+        elif status == 'Odebrany':
+            donation.is_taken = True
+            donation.pick_up_date = datetime.date.today()
+        donation.save()
+        return redirect(reverse('my-donation'))

@@ -241,4 +241,22 @@ $(document).ready(function() {
             $("div.form--steps-instructions").show();
         }
     })
+
+    $("input[value='Nieodebrany']").click(function (e) {
+        e.preventDefault();
+    })
+
+    $("input[value='Odebrany']").click(function (e) {
+        if ($(this).hasClass('active')) {
+            e.preventDefault();
+        } else {
+            const confirmation = confirm("Operacja jest nieodwracalna. Czy jesteś pewny, że chcesz zmienić status Swojego daru na 'Odebrany' ?")
+            if (confirmation) {
+                alert("Dziękujemy za przekazanie daru. \n Życzymy miłego dnia. ;)")
+            } else {
+                e.preventDefault();
+            }
+        }
+    })
+
 })
