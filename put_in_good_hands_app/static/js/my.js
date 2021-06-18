@@ -259,4 +259,6 @@ $(document).ready(function() {
         }
     })
 
+    $(".errorlist").css({"color": "red", "font-size": "14px"})
+
 })

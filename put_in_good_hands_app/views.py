@@ -15,13 +15,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, TemplateView, View
 # from formtools.wizard.views import SessionWizardView
 
-from put_in_good_hands_app.forms import (
-    RegisterForm,
-    DonationForm1,
-    DonationForm2,
-    DonationForm3,
-    DonationForm4,
-)
+from put_in_good_hands_app.forms import RegisterForm
 from put_in_good_hands_app.models import Category, Donation, Institution
 
 
@@ -206,7 +200,7 @@ class CustomLoginView(LoginView):
             login(request, user)
             return redirect(self.get_success_url())
         else:
-            return redirect(reverse_lazy('register'))
+            return redirect(reverse('register'))
 
 
 class RegisterView(CreateView):
@@ -227,7 +221,9 @@ class ConfirmDonationView(TemplateView):
 class MyDonationView(ListView):
     model = Donation
     template_name = "donation_list.html"
-    ordering = ('is_taken', '-pick_up_date', )
+
+    def get_queryset(self):
+        return Donation.objects.filter(user=self.request.user).order_by("is_taken", "-pick_up_date")
 
     def post(self, request, *args, **kwargs):
         status = request.POST.get('status')

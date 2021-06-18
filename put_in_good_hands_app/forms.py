@@ -9,6 +9,7 @@ from put_in_good_hands_app.validators import (
     validate_address,
     validate_pick_up_date,
     validate_zip_code,
+    validate_password,
 )
 
 
@@ -16,7 +17,7 @@ class RegisterForm(UserCreationForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={
         'placeholder': "Email"}), required=True)
     password1 = forms.CharField(widget=forms.PasswordInput(attrs={
-        'placeholder': 'Hasło'}))
+        'placeholder': 'Hasło'}), validators=[validate_password, ])
     password2 = forms.CharField(widget=forms.PasswordInput(attrs={
         'placeholder': 'Potwierdź hasło'}))
 
@@ -55,61 +56,61 @@ class RegisterForm(UserCreationForm):
         return user
 
 
-class DonationForm1(forms.ModelForm):
+# class DonationForm1(forms.ModelForm):
 
-    class Meta:
-        model = Donation
-        fields = ('categories', )
-        widgets = {
-            'categories': forms.CheckboxSelectMultiple
-        }
-
-
-class DonationForm2(forms.ModelForm):
-
-    class Meta:
-        model = Donation
-        fields = ('quantity', )
-        widgets = {
-            'quantity': forms.NumberInput(attrs={
-                'min': 1
-            })
-        }
+#     class Meta:
+#         model = Donation
+#         fields = ('categories', )
+#         widgets = {
+#             'categories': forms.CheckboxSelectMultiple
+#         }
 
 
-class DonationForm3(forms.ModelForm):
+# class DonationForm2(forms.ModelForm):
 
-    class Meta:
-        model = Donation
-        fields = ('institution', )
-        widgets = {
-            'institution': forms.RadioSelect
-        }
+#     class Meta:
+#         model = Donation
+#         fields = ('quantity', )
+#         widgets = {
+#             'quantity': forms.NumberInput(attrs={
+#                 'min': 1
+#             })
+#         }
 
 
-class DonationForm4(forms.ModelForm):
+# class DonationForm3(forms.ModelForm):
 
-    class Meta:
-        model = Donation
-        fields = ('address', 'city', 'zip_code', 'phone_number',
-                  'pick_up_date', 'pick_up_time', 'pick_up_comment', )
-        widgets = {
-            'address': forms.TextInput(attrs={
-                'maxlength': 128
-            }),
-            'city': forms.TextInput(attrs={
-                'maxlength': 64
-            }),
-            'zip_code': forms.NumberInput(attrs={
-                'pattern': "[0-9]{2}-[0-9]{3}"
-            }),
-            'phone_number': forms.NumberInput(attrs={
-                'type': 'tel',
-                'pattern': "[0-9]{3}[0-9]{3}[0-9]{3}"
-            }),
-            'pick_up_date': forms.SelectDateWidget,
-            'pick_up_time': forms.TimeInput,
-            'pick_up_comment': forms.Textarea(attrs={
-                 'maxlength': 255
-            })
-        }
+#     class Meta:
+#         model = Donation
+#         fields = ('institution', )
+#         widgets = {
+#             'institution': forms.RadioSelect
+#         }
+
+
+# class DonationForm4(forms.ModelForm):
+
+#     class Meta:
+#         model = Donation
+#         fields = ('address', 'city', 'zip_code', 'phone_number',
+#                   'pick_up_date', 'pick_up_time', 'pick_up_comment', )
+#         widgets = {
+#             'address': forms.TextInput(attrs={
+#                 'maxlength': 128
+#             }),
+#             'city': forms.TextInput(attrs={
+#                 'maxlength': 64
+#             }),
+#             'zip_code': forms.NumberInput(attrs={
+#                 'pattern': "[0-9]{2}-[0-9]{3}"
+#             }),
+#             'phone_number': forms.NumberInput(attrs={
+#                 'type': 'tel',
+#                 'pattern': "[0-9]{3}[0-9]{3}[0-9]{3}"
+#             }),
+#             'pick_up_date': forms.SelectDateWidget,
+#             'pick_up_time': forms.TimeInput,
+#             'pick_up_comment': forms.Textarea(attrs={
+#                  'maxlength': 255
+#             })
+#         }
