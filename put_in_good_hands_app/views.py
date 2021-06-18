@@ -12,10 +12,10 @@ from django.db.models import Sum
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, TemplateView, View
+from django.views.generic import CreateView, ListView, TemplateView, UpdateView, View
 # from formtools.wizard.views import SessionWizardView
 
-from put_in_good_hands_app.forms import RegisterForm
+from put_in_good_hands_app.forms import RegisterForm, UserSettingsForm
 from put_in_good_hands_app.models import Category, Donation, Institution
 
 
@@ -235,3 +235,9 @@ class MyDonationView(ListView):
             donation.pick_up_date = datetime.date.today()
         donation.save()
         return redirect(reverse('my-donation'))
+
+
+class UserSettingsView(UpdateView):
+    model = User
+    form_class = UserSettingsForm
+    template_name = "settings.html"
