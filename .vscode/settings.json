@@ -3,4 +3,5 @@
     "terminal.integrated.cursorStyle": "line",
     "editor.wordWrapColumn": 79,
     "editor.wordWrap": "wordWrapColumn",
+    "editor.defaultFormatter": "ms-python.python",
 }

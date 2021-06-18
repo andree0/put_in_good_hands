@@ -44,8 +44,7 @@ class LandingPageView(TemplateView):
             'counter_bags': Donation.objects.aggregate(
                 sum_bag=Sum('quantity'))[
                 'sum_bag'] if Donation.objects.all() else 0,
-            'counter_organization': Donation.objects.values(
-                'institution').count(),
+            'counter_organization': len([i for i in Institution.objects.all() if i.donation_set.all().count()]),
             'foundations': foundations,
             'non_governmental_organizations': organizations,
             'local_collection': local_collection,
@@ -228,7 +227,7 @@ class ConfirmDonationView(TemplateView):
 class MyDonationView(ListView):
     model = Donation
     template_name = "donation_list.html"
-    ordering = ('is_taken', 'pick_up_date', )
+    ordering = ('is_taken', '-pick_up_date', )
 
     def post(self, request, *args, **kwargs):
         status = request.POST.get('status')
