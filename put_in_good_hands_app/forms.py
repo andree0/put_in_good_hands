@@ -1,6 +1,7 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import PasswordChangeForm, UserCreationForm
 from django.contrib.auth.models import User
+from django.forms import widgets
 
 from put_in_good_hands_app.validators import validate_password
 
@@ -53,3 +54,46 @@ class UserSettingsForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'email',)
+
+
+class CustomPasswordChangeForm(forms.Form):
+    old_password = forms.CharField(
+        label="Stare hasło", 
+        widget=forms.PasswordInput)
+    new_password1 = forms.CharField(
+        label="Nowe hasło",
+        widget=forms.PasswordInput,
+        validators=[validate_password])
+    new_password2 = forms.CharField(
+        label="Powtórz nowe hasło",
+        widget=forms.PasswordInput)
+
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)    
+
+    def clean_old_password(self):
+        """
+        Validates that the old_password field is correct.
+        """
+        
+        old_password = self.cleaned_data["old_password"]
+        if not self.user.check_password(old_password):
+            self.add_error('old_password', 
+            "Podane stare hasło jest niepoprawne. Proszę podać je jeszcze raz.")
+        return old_password
+
+    def clean_new_password2(self):
+        password1 = self.cleaned_data.get('new_password1')
+        password2 = self.cleaned_data.get('new_password2')
+        if password1 and password2:
+            if password1 != password2:
+                self.add_error("new_password2",
+                "Hasła w obu polach nie są zgodne")
+        return password2
+
+    def save(self, commit=True):
+        self.user.set_password(self.cleaned_data['new_password1'])
+        if commit:
+            self.user.save()
+        return self.user

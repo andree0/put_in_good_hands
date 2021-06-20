@@ -4,7 +4,7 @@
     <ul class="dropdown">
       <li><a href="{% url 'profile-details' %}">Profil</a></li>
       <li><a href="{% url 'my-donation' %}">Moje dary</a></li>
-      <li><a href="#">Ustawienia</a></li>
+      <li><a href="{% url 'settings' %}">Ustawienia</a></li>
       {% if user.is_authenticated and user.is_staff %}
         <li><a href="{% url 'admin:index' %}">Panel administracyjny</a></li>
       {% endif %}

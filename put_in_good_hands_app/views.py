@@ -5,17 +5,27 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
-from django.contrib.messages import add_message, ERROR, get_messages
+from django.contrib.messages import add_message, get_messages
+from django.contrib.messages.constants import ERROR, SUCCESS
 from django.core.paginator import Paginator
 from django.core.serializers import serialize
 from django.db.models import Sum
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, TemplateView, UpdateView, View
-# from formtools.wizard.views import SessionWizardView
+from django.views.generic import (
+    CreateView, 
+    FormView, 
+    ListView, 
+    TemplateView, 
+    View, 
+    )
 
-from put_in_good_hands_app.forms import RegisterForm, UserSettingsForm
+from put_in_good_hands_app.forms import (
+    CustomPasswordChangeForm, 
+    RegisterForm, 
+    UserSettingsForm,
+    )
 from put_in_good_hands_app.models import Category, Donation, Institution
 
 
@@ -38,24 +48,12 @@ class LandingPageView(TemplateView):
             'counter_bags': Donation.objects.aggregate(
                 sum_bag=Sum('quantity'))[
                 'sum_bag'] if Donation.objects.all() else 0,
-            'counter_organization': len([i for i in Institution.objects.all() if i.donation_set.all().count()]),
+            'counter_organization': len([i for i in Institution.objects.all() 
+            if i.donation_set.all().count()]),
             'foundations': foundations,
             'non_governmental_organizations': organizations,
             'local_collection': local_collection,
         }
-
-
-# Alternatywna droga do formularzy kilku krokowych
-
-# class AddDonationView(SessionWizardView):
-#     template_name = "form.html"
-#     form_list = [DonationForm1, DonationForm2, DonationForm3, DonationForm4]
-#
-#     def done(self, form_list, **kwargs):
-#         do_something_with_the_form_data(form_list)
-#         return render(self.request, 'form-confirmation.html', {
-#             'form_data': [form.cleaned_data for form in form_list],
-#         })
 
 
 class AddDonationView(LoginRequiredMixin, View):
@@ -223,7 +221,8 @@ class MyDonationView(ListView):
     template_name = "donation_list.html"
 
     def get_queryset(self):
-        return Donation.objects.filter(user=self.request.user).order_by("is_taken", "-pick_up_date")
+        return Donation.objects.filter(user=self.request.user).order_by(
+            "is_taken", "-pick_up_date")
 
     def post(self, request, *args, **kwargs):
         status = request.POST.get('status')
@@ -237,7 +236,39 @@ class MyDonationView(ListView):
         return redirect(reverse('my-donation'))
 
 
-class UserSettingsView(UpdateView):
-    model = User
-    form_class = UserSettingsForm
+class UserSettingsView(LoginRequiredMixin, TemplateView):
     template_name = "settings.html"
+    success_url = reverse_lazy('settings')
+
+    def get_context_data(self, **kwargs):
+        user = self.request.user
+        if 'form_user_data' not in kwargs:
+            kwargs['form_user_data'] = UserSettingsForm(
+                initial={
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email
+                })
+        if 'form_password' not in kwargs:
+            kwargs['form_password'] = CustomPasswordChangeForm(user)
+        return kwargs
+
+    def post(self, request, *args, **kwargs):
+        if request.POST.get('update_user'):
+            form_user_data = UserSettingsForm(request.POST)
+            if form_user_data.is_valid():
+                User.objects.filter(pk=request.user.pk).update(**form_user_data.cleaned_data)
+                add_message(request, SUCCESS, "Zapisano zmiany")
+            return self.render_to_response(self.get_context_data(form_user_data=form_user_data))
+        elif request.POST.get('change_password'):
+            form_password = CustomPasswordChangeForm(request.user, request.POST)
+            if form_password.is_valid():
+                user = request.user
+                user.set_password(request.POST.get('new_password1'))
+                user.save()
+                add_message(request, SUCCESS, "Hasło zostało zmienione")
+            return self.render_to_response(self.get_context_data(form_password=form_password))
+        return redirect(self.success_url)
+
+
+
