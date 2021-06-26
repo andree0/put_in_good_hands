@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import PasswordChangeForm, UserCreationForm
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import widgets
 
@@ -53,7 +53,10 @@ class UserSettingsForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email',)
+        fields = ('first_name', 'last_name', 'email', 'password', )
+        widgets = {
+            'password': forms.PasswordInput(),
+        }
 
 
 class CustomPasswordChangeForm(forms.Form):
@@ -97,3 +100,19 @@ class CustomPasswordChangeForm(forms.Form):
         if commit:
             self.user.save()
         return self.user
+
+# class CustomAuthenticatedForm(forms.Form):
+#     password = forms.CharField(
+#         widget=forms.PasswordInput(attrs={"placeholder": "Podaj hasło"}), 
+#         label="",
+#         )
+    
+#     def __init__(self, user, *args, **kwargs):
+#         self.user = user
+#         super().__init__(*args, **kwargs)    
+
+#     def clean__password(self):        
+#         password = self.cleaned_data["password"]
+#         if not self.user.check_password(password):
+#             self.add_error('', "Błędne hasło")
+#         return password

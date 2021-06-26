@@ -261,4 +261,6 @@ $(document).ready(function() {
 
     $(".errorlist").css({"color": "red", "font-size": "14px"})
 
+    $("form#settings_form").append($("<div>").addClass("form-group").append($("input#id_password").addClass("form-control")).append($("div#confirm_buutons")))
+
 })

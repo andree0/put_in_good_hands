@@ -17,8 +17,12 @@
   {% endif %}
   <form action="" method="POST" id="settings_form">{% csrf_token %}
     {{ form_user_data }}
+    <div class="form-group form-group--buttons" id="confirm_buutons">
+      <button class="btn">Anuluj</button>
+      <input class="btn" type="submit" value="Potwierdź" name="update_user"/>
+    </div>
     <div class="form-group form-group--buttons">
-      <input class="btn" type="submit" value="Zapisz zmiany" name="update_user"/>
+      <button class="btn">Zapisz zmiany</button>
     </div>
   </form>
 </section>

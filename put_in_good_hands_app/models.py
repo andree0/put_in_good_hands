@@ -1,12 +1,26 @@
 from django.db import models
+from django.db.models.signals import pre_delete, pre_save
 from django.contrib.auth.models import User
+from django.core.exceptions import PermissionDenied
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.dispatch.dispatcher import receiver
 
 from put_in_good_hands_app.validators import (
     validate_address,
     validate_pick_up_date,
     validate_zip_code,
 )
+
+
+@receiver(pre_delete, sender=User)
+def delete_user(sender, instance, **kwargs):
+    if sender.objects.filter(is_superuser=True).count() == 1:
+        raise PermissionDenied
+
+@receiver(pre_save, sender=User)
+def save_user(sender, instance, **kwargs):
+    if sender.objects.filter(is_superuser=True).count() == 1:
+        raise PermissionDenied
 
 
 class Category(models.Model):

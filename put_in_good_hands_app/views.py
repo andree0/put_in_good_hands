@@ -15,7 +15,6 @@ from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView, 
-    FormView, 
     ListView, 
     TemplateView, 
     View, 
@@ -251,14 +250,27 @@ class UserSettingsView(LoginRequiredMixin, TemplateView):
                 })
         if 'form_password' not in kwargs:
             kwargs['form_password'] = CustomPasswordChangeForm(user)
+        # if 'form_authenticted' not in kwargs:
+        #     kwargs['form_authenticted'] = CustomAuthenticatedForm(user)
         return kwargs
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('update_user'):
             form_user_data = UserSettingsForm(request.POST)
             if form_user_data.is_valid():
-                User.objects.filter(pk=request.user.pk).update(**form_user_data.cleaned_data)
-                add_message(request, SUCCESS, "Zapisano zmiany")
+                first_name = form_user_data.cleaned_data.get('first_name')
+                last_name = form_user_data.cleaned_data.get('last_name')
+                email = form_user_data.cleaned_data.get('email')
+                password = form_user_data.cleaned_data.get('password')
+                if request.user.check_password(password):
+                    User.objects.filter(pk=request.user.pk).update(
+                        first_name=first_name, 
+                        last_name=last_name, 
+                        username=email, 
+                        email=email)
+                    add_message(request, SUCCESS, "Zapisano zmiany")
+                else:
+                    add_message(request, ERROR, "Podano błędne hasło, zmiany nie zostały zapisane")
             return self.render_to_response(self.get_context_data(form_user_data=form_user_data))
         elif request.POST.get('change_password'):
             form_password = CustomPasswordChangeForm(request.user, request.POST)
