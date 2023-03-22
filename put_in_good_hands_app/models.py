@@ -1,6 +1,6 @@
-from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
 
 from put_in_good_hands_app.validators import (
     validate_address,
@@ -18,9 +18,9 @@ class Category(models.Model):
 
 class Institution(models.Model):
     TYPES = (
-        (0, 'fundacja'),
-        (1, 'organizacja pozarządowa'),
-        (2, 'zbiórka lokalna'),
+        (0, "fundacja"),
+        (1, "organizacja pozarządowa"),
+        (2, "zbiórka lokalna"),
     )
 
     name = models.CharField(max_length=255)
@@ -37,18 +37,19 @@ class Donation(models.Model):
     categories = models.ManyToManyField(Category)
     institution = models.ForeignKey(Institution, on_delete=models.PROTECT)
     address = models.CharField(max_length=128, validators=[validate_address])
-    phone_number = models.PositiveIntegerField(validators=[
-        MinValueValidator(100000000), MaxValueValidator(999999999)])
+    phone_number = models.PositiveIntegerField(
+        validators=[MinValueValidator(100000000), MaxValueValidator(999999999)]
+    )
     city = models.CharField(max_length=64)
-    zip_code = models.CharField(max_length=6, validators=[validate_zip_code],
-                                help_text="XX-XXX")
+    zip_code = models.CharField(max_length=6, validators=[validate_zip_code], help_text="XX-XXX")
     pick_up_date = models.DateField(validators=[validate_pick_up_date])
     pick_up_time = models.TimeField()
     pick_up_comment = models.CharField(max_length=255, blank=True, null=True)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,
-                             blank=True, default=None)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, default=None)
     is_taken = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.quantity} worków dla {self.institution} - " \
-               f"{self.pick_up_date} {self.pick_up_time}"
+        return (
+            f"{self.quantity} worków dla {self.institution} - "
+            f"{self.pick_up_date} {self.pick_up_time}"
+        )

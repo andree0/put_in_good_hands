@@ -19,14 +19,15 @@ from django.urls import path
 
 from put_in_good_hands_app import views as v
 
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', v.LandingPageView.as_view(), name="landing_page"),
-    path('login/', v.CustomLoginView.as_view(), name="login"),
-    path('logout/', LogoutView.as_view(), name="logout"),
-    path('register/', v.RegisterView.as_view(), name="register"),
-    path('add-donation/', v.AddDonationView.as_view(), name="add-donation"),
-    path('profile-details/', v.ProfileView.as_view(), name="profile-details"),
-    path('confirm/', v.ConfirmDonationView.as_view(), name="confirm"),
-    path('my-donation/', v.MyDonationView.as_view(), name="my-donation"),
+    path("admin/", admin.site.urls),
+    path("", v.LandingPageView.as_view(), name="landing_page"),
+    path("login/", v.CustomLoginView.as_view(), name="login"),
+    path("logout/", LogoutView.as_view(), name="logout"),
+    path("register/", v.RegisterView.as_view(), name="register"),
+    path("add-donation/", v.AddDonationView.as_view(), name="add-donation"),
+    path("profile-details/", v.ProfileView.as_view(), name="profile-details"),
+    path("confirm/", v.ConfirmDonationView.as_view(), name="confirm"),
+    path("my-donation/", v.MyDonationView.as_view(), name="my-donation"),
 ]
