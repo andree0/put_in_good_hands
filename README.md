@@ -4,7 +4,7 @@ PUT IN GOOD HANDS
 An application for easily putting unnecessary things into trusted hands \
 (trusted oraganizations).
 
-Used technologies: Python 3.8, Django 3.2, Postgres, sqlite3, Docker, \
+Used technologies: Python 3.10, Django 3.2, Postgres, sqlite3, Docker, \
 docker-compose, JavaScript, JQuery, __multistep form__, __CRUD__
 
 ### Main page
