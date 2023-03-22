@@ -1,13 +1,10 @@
-FROM python:3.6-slim
+FROM python:3.10-slim
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-RUN mkdir /code
-WORKDIR /code
-RUN pip install --upgrade pip
-COPY requirements.txt /code/
-
-RUN pip install -r requirements.txt
-COPY . /code/
+COPY ./requirements.lock.txt /build/requirements.txt
+RUN pip install --no-cache-dir -r /build/requirements.txt
+WORKDIR /srv
+COPY . /srv/
 
 EXPOSE 8000
