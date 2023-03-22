@@ -1,0 +1,8 @@
+.editorconfig
+.flake8
+.pre-commit-config.yaml
+pyproject.toml
+README.md
+.dockerignore
+.gitignore
+requirements.txt
